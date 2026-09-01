@@ -27,6 +27,8 @@ jobs:
           dotnet-version: '10.0.x'
       - uses: actions/configure-pages@v5
       - run: dotnet fsi scripts/aac-calendar.fsx
+        env:
+          TM_API_CONSUMER_KEY: ${{ secrets.TM_API_CONSUMER_KEY }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: public
