@@ -100,6 +100,12 @@ let vevents =
         if not (String.IsNullOrWhiteSpace e.url) then
             yield fold $"URL:{e.url}"
         yield "LOCATION:American Airlines Center\\, 2500 Victory Avenue\\, Dallas\\, TX 75219"
+        yield "LOCATION:American Airlines Center\\, 2500 Victory Avenue\\, Dallas\\, TX 75219"
+        yield "BEGIN:VALARM"
+        yield "ACTION:DISPLAY"
+        yield "DESCRIPTION:Reminder"
+        yield "TRIGGER:-PT3H"
+        yield "END:VALARM"
         yield "END:VEVENT" ]
 
 let ics =
