@@ -27,6 +27,8 @@ let url =
     $"https://app.ticketmaster.com/discovery/v2/events?apikey={apiKey}&venueId={venueId}&size=100&sort=date,asc"
 
 let options = JsonSerializerOptions(PropertyNameCaseInsensitive = true)
+options.Converters.Add(JsonFSharpConverter())
+
 let http = new HttpClient()
 http.DefaultRequestHeaders.UserAgent.ParseAdd("aac-ics-publisher/1.0")
 let json = http.GetStringAsync(url).Result
