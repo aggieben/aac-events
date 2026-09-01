@@ -3,6 +3,7 @@
 open System
 open System.IO
 open System.Net.Http
+open System.Text
 open System.Text.Json
 open System.Text.Json.Serialization
 open FSharp.SystemTextJson
@@ -36,12 +37,11 @@ let payload = JsonSerializer.Deserialize<DiscoveryResponse>(json, options)
 
 let events =
     match payload with
-    | p when isNull (box p.Embedded) || isNull p.Embedded.events -> [||]
+    | p when isNull (box p._embedded) || isNull p._embedded.events -> [||]
     | p ->
-        p.Embedded.events
+        p._embedded.events
         |> Array.filter (fun e ->
-            not (isNull e)
-            && not (String.IsNullOrWhiteSpace e.dates.start.localDate))
+                not (String.IsNullOrWhiteSpace e.dates.start.localDate))
 
 let esc (s: string) =
     (s |> Option.ofObj |> Option.defaultValue "")
@@ -88,12 +88,13 @@ let vevents =
         yield $"UID:{uid}"
         yield $"DTSTAMP:{stamp}"
 
-        if String.IsNullOrWhiteSpace start.localTime then
+        match start.localTime with
+        | None ->
             yield $"DTSTART;VALUE=DATE:{icsDate start.localDate}"
             yield $"DTEND;VALUE=DATE:{nextDay start.localDate}"
-        else
-            yield $"DTSTART;TZID=America/Chicago:{icsDateTime start.localDate start.localTime}"
-            yield $"DTEND;TZID=America/Chicago:{plusHours start.localDate start.localTime 2.0}"
+        | Some lt -> 
+            yield $"DTSTART;TZID=America/Chicago:{icsDateTime start.localDate lt}"
+            yield $"DTEND;TZID=America/Chicago:{plusHours start.localDate lt 2.0}"
 
         yield fold $"SUMMARY:{esc e.name}"
         if not (String.IsNullOrWhiteSpace e.url) then
