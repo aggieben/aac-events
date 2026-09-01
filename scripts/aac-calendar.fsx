@@ -36,7 +36,6 @@ let payload = JsonSerializer.Deserialize<DiscoveryResponse>(json, options)
 
 let events =
     match payload with
-    | null -> [||]
     | p when isNull (box p.Embedded) || isNull p.Embedded.events -> [||]
     | p ->
         p.Embedded.events
