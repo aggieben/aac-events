@@ -1,3 +1,5 @@
+#r "nuget: FSharp.SystemTextJson, 1.4.36"
+
 open System
 open System.IO
 open System.Net.Http
@@ -25,7 +27,7 @@ let url =
     $"https://app.ticketmaster.com/discovery/v2/events?apikey={apiKey}&venueId={venueId}&size=100&sort=date,asc"
 
 let options = JsonSerializerOptions(PropertyNameCaseInsensitive = true)
-use http = new HttpClient()
+let http = new HttpClient()
 http.DefaultRequestHeaders.UserAgent.ParseAdd("aac-ics-publisher/1.0")
 let json = http.GetStringAsync(url).Result
 let payload = JsonSerializer.Deserialize<DiscoveryResponse>(json, options)
